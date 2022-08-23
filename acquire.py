@@ -11,6 +11,7 @@ SQLQUERY ="""
 SELECT 
     date,
     time,
+    ip,
     path as endpoint,
     user_id,
     cohort_id,
