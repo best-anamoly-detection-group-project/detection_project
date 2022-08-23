@@ -58,3 +58,24 @@ def get_data():
         df.to_csv(filename)
         # Return the dataframe to the calling code
         return df  
+
+def wrangle_data():
+    df = get_data()
+
+    df.date = pd.to_datetime(df.date)
+    df.start_date = pd.to_datetime(df.start_date)
+    df.end_date = pd.to_datetime(df.end_date)
+    df.time = pd.to_timedelta(df.time)
+    df['datetime'] = df.date + df.time
+    df = df.set_index('datetime')
+    df = df.drop(columns=['date','time'])
+    df = df.sort_index()
+    df = df.dropna()
+    pnames = {  1: 'Full Stack PHP',
+            2: 'Full Stack Java',
+            3: 'Data Science',
+            4: 'Front-End'
+            }
+    df['program'] = df.program_id.replace(pnames)
+    
+    df.head()
