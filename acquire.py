@@ -77,5 +77,4 @@ def wrangle_data():
             4: 'Front-End'
             }
     df['program'] = df.program_id.replace(pnames)
-    
-    df.head()
+    return df
