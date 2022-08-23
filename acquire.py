@@ -59,22 +59,49 @@ def get_data():
         # Return the dataframe to the calling code
         return df  
 
+
+####################
+# Begin Data specific transformations
+####################
+
+def get_lesson(string):
+    arr = string.split('/')
+    if len(arr) > 1:
+        return arr[1]
+    else:
+        return None
+
+def get_module(string):
+    arr = string.split('/')
+    return arr[0]
+
+def parse_module_lesson(df):
+    df['module'] = df.endpoint.apply(get_module)
+    df['lesson'] = df.endpoint.apply(get_lesson)
+    df = df.replace({'':None})
+    return df
+
+
 def wrangle_data():
     df = get_data()
+    df = df.dropna()
 
     df.date = pd.to_datetime(df.date)
     df.start_date = pd.to_datetime(df.start_date)
     df.end_date = pd.to_datetime(df.end_date)
     df.time = pd.to_timedelta(df.time)
     df['datetime'] = df.date + df.time
-    df = df.set_index('datetime')
     df = df.drop(columns=['date','time'])
+    df = df.set_index('datetime')
     df = df.sort_index()
-    df = df.dropna()
+    
     pnames = {  1: 'Full Stack PHP',
             2: 'Full Stack Java',
             3: 'Data Science',
             4: 'Front-End'
             }
     df['program'] = df.program_id.replace(pnames)
+
+    df = parse_module_lesson(df)
+
     return df
