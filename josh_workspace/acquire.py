@@ -22,7 +22,7 @@ SELECT
     program_id
 FROM
     curriculum_logs.logs
-join
+left join
 	curriculum_logs.cohorts on cohort_id = id
 ;
 """
@@ -85,7 +85,7 @@ def parse_module_lesson(df):
 
 def wrangle_data():
     df = get_data()
-    df = df.dropna()
+    df = df[df.endpoint.notna()]
 
     df.date = pd.to_datetime(df.date)
     df.start_date = pd.to_datetime(df.start_date)
