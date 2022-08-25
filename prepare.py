@@ -16,6 +16,9 @@ def filter_students(df):
     # create mask to filter by times accessed when students were active
     std10less['date_mask'] = std10less.index >= pd.Timestamp('2019-11-04')
     std_final = std10less.mask(std10less['date_mask'] == False).dropna()
+
+    # drop mask column
+    std_final = std_final.drop(columns=['date_mask'])
     
     # send it
     return std_final
