@@ -11,6 +11,10 @@ By Daniel Ford, Jarad Angel, Joshua Mayes
 <!-- - [Project Planning](#plan)   -->
 
 - [About the data](#data)
+    - Scope
+    - Acquiring
+    - Preparing
+    - Data Dictionary
 
 
 
@@ -111,6 +115,10 @@ The IP geolocation information was acquired via API calls to www.geoplugin.net. 
 
 ## Preparing
 
-{How was the data prepared for exploration?  Was any data fabricated through imputing or resampling?}
+The steps below were taken:
+- Ensuring that the data has the appropriate datatypes such setting dates to be recognized as datetime objects.
+- The program ID was translated to a program name by using CodeUp's alumni page, which displays the program name when a cohort is selected.
+- Modules and lessons were inferred by parsing the endpoint string.  Anything left of the first slash ("/") was inferred as the module's name, and anything to the right was inferred as the lesson name.
+- 
 
 ## Data Dictionary
