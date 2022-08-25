@@ -67,3 +67,33 @@ def wrangle_ip_merged():
     df = merge_ip_info(df)
     df = df.set_index('datetime')
     return df
+
+
+# Util functions
+
+def detect_country_geohop_events(df, window='1D', group_by='user_id'):
+    """Given a time-indexed dataframe with ip geolocation information merged onto it, 
+    list events where the group_by variable appears in different countries within the same window."""
+    # First do the appropriate grouping.
+    temp = df.groupby([group_by,pd.Grouper(freq=window)]).countryName.value_counts()
+    
+    # Then parse the grouping to collect the events.
+    temp = temp.rename('vcount').reset_index()
+    idxName = df.index.name
+    what = df[group_by].name
+    geoHop_events = {}
+    key = 0
+    for thing in temp[group_by].unique().tolist():
+        this = temp[temp[group_by] == thing]
+        log = this.groupby(idxName).countryName.nunique()
+        events = log[log > 1].index.tolist()
+        if len(events) > 0:
+            for  event in events:
+                countries = this[this.datetime == event].countryName.unique().tolist()
+                entry = {   'when_start': event,
+                            'when_end': event + pd.Timedelta(window),
+                            'where':countries,
+                            what: thing}
+                geoHop_events[key]= entry
+                key += 1
+    return pd.DataFrame.from_dict(geoHop_events, orient='index')
